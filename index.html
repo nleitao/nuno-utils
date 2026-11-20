@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
+  <meta name="description" content="Personal toolbox: time zones and currency, works offline.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Utils">
+  <title>Nuno Utils</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1 id="page-title">Time zones</h1>
+    <span id="net-badge" class="badge" hidden>Offline</span>
+  </header>
+
+  <main>
+    <!-- TIME ZONES -->
+    <section id="view-tz" class="view" aria-labelledby="page-title">
+      <div class="toolbar">
+        <label class="field field-date">
+          <span class="field-label">Date</span>
+          <input type="date" id="tz-date">
+        </label>
+        <button type="button" class="btn" id="tz-now">Now</button>
+        <button type="button" class="btn btn-primary" id="tz-add">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          Add
+        </button>
+      </div>
+
+      <div class="tz-board-wrap">
+        <div class="tz-board" id="tz-board" role="list"></div>
+      </div>
+
+      <div class="slider-block">
+        <label for="tz-slider" class="field-label">Slide to pick a time <span class="muted">(<span id="tz-slider-home"></span> time)</span></label>
+        <input type="range" id="tz-slider" min="0" max="1425" step="15" value="540">
+        <div class="slider-scale" aria-hidden="true"><span>00</span><span>06</span><span>12</span><span>18</span><span>24</span></div>
+      </div>
+
+      <p class="hint">Tap an hour to jump to it. Green is 09 to 18, dark is night. The ★ zone is home: its day sets the 24 hours shown.</p>
+    </section>
+
+    <!-- CURRENCY -->
+    <section id="view-fx" class="view" hidden aria-labelledby="page-title">
+      <div class="card fx-card">
+        <label class="field">
+          <span class="field-label">Amount</span>
+          <input type="text" id="fx-amount" inputmode="decimal" autocomplete="off" enterkeyhint="done" value="1000" aria-describedby="fx-amount-err">
+          <span class="field-error" id="fx-amount-err" hidden>Enter a number, like 1250 or 12.50</span>
+        </label>
+
+        <div class="fx-pair">
+          <button type="button" class="cur-btn" id="fx-from" aria-label="From currency"></button>
+          <button type="button" class="icon-btn" id="fx-swap" aria-label="Swap currencies">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 8h16M20 8l-4-4M20 8l-4 4M20 16H4M4 16l4-4M4 16l4 4"/></svg>
+          </button>
+          <button type="button" class="cur-btn" id="fx-to" aria-label="To currency"></button>
+        </div>
+
+        <output class="fx-result" id="fx-result" aria-live="polite"></output>
+        <p class="fx-rate muted" id="fx-rate"></p>
+      </div>
+
+      <div class="quick">
+        <h2 class="section-title">Quick amounts</h2>
+        <div class="quick-grid" id="fx-quick"></div>
+      </div>
+
+      <div class="fx-status">
+        <p id="fx-updated" class="muted"></p>
+        <button type="button" class="btn btn-small" id="fx-refresh">Update rates</button>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabbar" aria-label="Tools">
+    <button type="button" class="tab" data-view="tz" aria-current="page">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      <span>Time zones</span>
+    </button>
+    <button type="button" class="tab" data-view="fx">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg>
+      <span>Currency</span>
+    </button>
+  </nav>
+
+  <!-- Picker sheet (shared by both tools) -->
+  <dialog id="picker" class="sheet" aria-labelledby="picker-title">
+    <div class="sheet-head">
+      <h2 id="picker-title">Choose</h2>
+      <button type="button" class="icon-btn" id="picker-close" aria-label="Close">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <label class="search">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg>
+      <input type="search" id="picker-search" placeholder="Search" autocomplete="off" enterkeyhint="search" aria-label="Search">
+    </label>
+    <ul id="picker-list" class="picker-list" role="listbox"></ul>
+    <p id="picker-empty" class="empty" hidden>Nothing matches. Try a city, country or code.</p>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="js/common.js"></script>
+  <script src="js/tz.js"></script>
+  <script src="js/fx.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
